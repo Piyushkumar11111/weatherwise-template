@@ -1,0 +1,88 @@
+Code:
+import os
+
+os.environ['HANDS_ON_AI_SERVER'] = 'http://ollama.serveur.au'
+os.environ['HANDS_ON_AI_MODEL'] = 'granite3.2'
+os.environ['HANDS_ON_AI_API_KEY'] = input('Enter your API key: ')
+
+
+
+Tool: ChatGPT
+Date: 23-04-2025
+
+
+Me: How do I set up the environment variables for `hands-on-ai`?
+AI: You can set them using `os.environ` in Python. Example:
+```python
+import os
+
+os.environ['HANDS_ON_AI_SERVER'] = 'http://ollama.serveur.au'
+os.environ['HANDS_ON_AI_MODEL'] = 'granite3.2'
+os.environ['HANDS_ON_AI_API_KEY'] = input('Enter your API key: ')
+
+
+Me: What does each variable do?
+AI:
+
+HANDS_ON_AI_SERVER: URL of the inference server
+HANDS_ON_AI_MODEL: The AI model you want to use
+HANDS_ON_AI_API_KEY: Authenticates your access
+
+
+Me: How do I send a prompt to the model once the environment is set?
+AI: Use the hands_on_ai.chat() function like this:
+from hands_on_ai import chat
+
+response = chat("What is the capital of Australia?")
+print(response)
+
+
+Me: Does it automatically use the environment variables?
+AI: Yes. hands-on-ai will automatically read HANDS_ON_AI_SERVER, HANDS_ON_AI_MODEL, and HANDS_ON_AI_API_KEY from os.environ.
+
+Me: What if I want to change the model dynamically without setting an env variable?
+AI: You can pass the model name directly as a parameter:
+chat("Summarize this article.", model="gemma-7b")
+
+
+Me: Can I override the server too?
+AI: Yes:
+chat("Summarize...", server="http://my.custom.server", model="granite3.2")
+
+
+Me: I get a KeyError: 'HANDS_ON_AI_API_KEY'. What should I do?
+AI: Make sure you're setting the API key before calling the function:
+
+os.environ['HANDS_ON_AI_API_KEY'] = 'your-api-key'
+
+
+Me: Is there a safer way than using input()?
+AI: Yes, use environment variables or .env files with dotenv:
+
+from dotenv import load_dotenv
+load_dotenv()
+
+
+Me: Can I get a structured JSON output from the model?
+AI: Yes, use the return_format="json" parameter:
+
+response = chat("Give me JSON with title, summary", return_format="json")
+
+
+
+Me: What if the output is invalid JSON?
+AI: Use json.loads(response) in a try/except block:
+
+import json
+
+try:
+    data = json.loads(response)
+except json.JSONDecodeError:
+    print("Invalid JSON from model")
+
+
+
+
+
+
+
