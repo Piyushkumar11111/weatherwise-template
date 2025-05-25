@@ -1,0 +1,175 @@
+Weather Data Function
+
+Code:
+
+import requests
+from datetime import datetime
+
+LOCATION = "Perth"
+
+def degrees_to_compass(degrees):
+    directions = ["N", "NNE", "NE", "ENE", "E", "ESE", "SE", "SSE",
+                  "S", "SSW", "SW", "WSW", "W", "WNW", "NW", "NNW"]
+    return directions[round(degrees / 22.5) % 16]
+
+def get_weather_forecast():
+    try:
+        url = f"https://wttr.in/{LOCATION}?format=j1"
+        response = requests.get(url)
+        response.raise_for_status()
+        data = response.json()
+
+        forecast = []
+
+        for day_data in data["weather"]:
+            date = day_data["date"]
+            day_of_week = datetime.strptime(date, "%Y-%m-%d").strftime("%A")
+            max_temp = float(day_data["maxtempC"])
+            min_temp = float(day_data["mintempC"])
+            conditions = set()
+            times = []
+
+            for hour in day_data["hourly"]:
+                time_str = f"{int(hour['time'])//100:02d}:00"
+                condition = hour["weatherDesc"][0]["value"]
+                temperature = float(hour["tempC"])
+                humidity = int(hour["humidity"])
+                wind_speed = float(hour["windspeedKmph"]) / 3.6  # Convert to m/s
+                wind_dir = degrees_to_compass(float(hour["winddirDegree"]))
+                precipitation_chance = int(hour["chanceofrain"])
+
+                conditions.add(condition)
+
+                times.append({
+                    "time": time_str,
+                    "temperature": temperature,
+                    "condition": condition,
+                    "humidity": humidity,
+                    "wind_speed": round(wind_speed, 1),
+                    "wind_direction": wind_dir,
+                    "precipitation_chance": precipitation_chance
+                })
+
+            forecast.append({
+                "date": date,
+                "day_of_week": day_of_week,
+                "max_temp": max_temp,
+                "min_temp": min_temp,
+                "conditions": conditions,
+                "times": times
+            })
+
+        return {
+            "location": LOCATION,
+            "forecast_days": len(forecast),
+            "forecast": forecast,
+            "generated_on": datetime.now().strftime("%Y-%m-%d %H:%M:%S")
+        }
+
+    except requests.exceptions.RequestException as e:
+        return {"error": f"Request failed: {str(e)}"}
+    except Exception as e:
+        return {"error": f"Error: {str(e)}"}
+
+def display_forecast(weather_data):
+    if "error" in weather_data:
+        print(f"Error: {weather_data['error']}")
+        return
+
+    print(f"\nWeather Forecast for {weather_data['location']}")
+    print(f"Generated on: {weather_data['generated_on']}")
+    print("=" * 50)
+
+    for day in weather_data["forecast"]:
+        print(f"\n{day['day_of_week']}, {day['date']}")
+        print(f"Temp: {day['min_temp']}°C to {day['max_temp']}°C")
+        print(f"Conditions: {', '.join(day['conditions'])}")
+        print("-" * 40)
+
+        for time in day["times"]:
+            print(f"{time['time']}: {time['condition']}")
+            print(f"  Temp: {time['temperature']}°C")
+            print(f"  Humidity: {time['humidity']}%")
+            print(f"  Wind: {time['wind_speed']} m/s {time['wind_direction']}")
+            print(f"  Rain chance: {time['precipitation_chance']}%")
+            print("-" * 20)
+
+if __name__ == "__main__":
+    print("Fetching weather data from wttr.in...")
+    weather_data = get_weather_forecast()
+    display_forecast(weather_data)
+
+
+
+
+----------------------------------
+Tool: ChatGPT
+Date: 23-05-2025
+----------------------------------
+
+Me: How do I get weather data from wttr.in as JSON?
+AI: Use the URL format `https://wttr.in/<location>?format=j1`. It returns weather in JSON format.
+
+Me: How do I fetch it in Python?
+AI: Use `requests.get()`:
+```python
+import requests
+response = requests.get("https://wttr.in/Perth?format=j1")
+data = response.json()
+
+Me: What if the request fails?
+AI: Wrap it in a try/except block with requests.exceptions.RequestException to catch network errors.
+
+Me: How can I convert wind direction from degrees to compass points?
+AI: Use a list of 16 directions and divide degrees by 22.5 to index it.
+
+Example:
+
+def degrees_to_compass(degrees):
+    directions = ["N", "NNE", "NE", "ENE", "E", "ESE", "SE", "SSE",
+                  "S", "SSW", "SW", "WSW", "W", "WNW", "NW", "NNW"]
+    return directions[round(degrees / 22.5) % 16]
+
+
+Me: Why % 16?
+AI: It wraps around so that values near 360 degrees correctly map to "N".
+
+Me: How can I format the hourly time like "600" as "06:00"?
+AI: Use integer division and formatting:
+
+hour_val = int(hour['time']) // 100
+time_str = f"{hour_val:02d}:00"
+
+
+Me: What if the value is already "0"?
+AI: It still works. 0 // 100 = 0, and f"{0:02d}" gives "00".
+
+Me: What if some weather fields like "chanceofrain" are missing?
+AI: Use .get() with a default:
+
+chance = hour.get("chanceofrain", "0")
+
+Me: Can I catch all unexpected errors?
+AI: Yes, use:
+
+except Exception as e:
+    return {"error": f"Error: {str(e)}"}
+This will catch anything not covered by specific exceptions.
+
+Me: How do I pretty-print each day’s forecast from the JSON?
+AI: Parse data["weather"] and loop over each day's forecast.
+
+Example:
+
+for day in data["weather"]:
+    date = day["date"]
+    max_temp = day["maxtempC"]
+    min_temp = day["mintempC"]
+    print(f"{date}: {min_temp}°C to {max_temp}°C")
+
+
+Me: How do I get the day of the week?
+AI: Use datetime.strptime() and strftime():
+
+from datetime import datetime
+day_of_week = datetime.strptime(date, "%Y-%m-%d").strftime("%A").
