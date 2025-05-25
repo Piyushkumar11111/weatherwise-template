@@ -1,0 +1,62 @@
+Visualisation Functions(Precipitation)
+Code:
+import requests
+import matplotlib.pyplot as plt
+from datetime import datetime
+
+# Step 1: Get live weather data from wttr.in for Perth in JSON format
+url = "https://wttr.in/Perth?format=j1"
+response = requests.get(url)
+data = response.json()
+
+# Step 2: Extract hourly precipitation chance for today
+times = []
+rain_chances = []
+
+for hour_data in data['weather'][0]['hourly']:
+    # Format time and parse it
+    time_str = hour_data['time'].zfill(4)  # e.g., "0" -> "0000"
+    dt = datetime.strptime(data['weather'][0]['date'] + ' ' + time_str, '%Y-%m-%d %H%M')
+    rain = int(hour_data.get('chanceofrain', 0))  # 'chanceofrain' is a string
+
+    times.append(dt)
+    rain_chances.append(rain)
+
+# Step 3: Plot the rain chance
+plt.figure(figsize=(12, 5))
+plt.bar(times, rain_chances, width=0.03, color='skyblue', label='Rain Chance (%)')
+
+plt.title('Live Rain Forecast for Today - Perth')
+plt.xlabel('Time')
+plt.ylabel('Chance of Rain (%)')
+plt.ylim(0, 110)
+plt.grid(True, linestyle='--', alpha=0.7)
+plt.legend()
+plt.tight_layout()
+plt.xticks(rotation=45)
+plt.show()
+
+
+
+
+
+
+Tool: ChatGPT
+Date: 23-05-2025
+
+
+Me: How do I get weather data in JSON format from wttr.in?
+AI: Use the URL `https://wttr.in/Perth?format=j1` — this gives JSON weather data for Perth.
+
+Me: How do I fetch that using Python?
+AI: Use the `requests` module like this:
+```python
+import requests
+url = "https://wttr.in/Perth?format=j1"
+response = requests.get(url)
+data = response.json()
+
+
+
+
+
