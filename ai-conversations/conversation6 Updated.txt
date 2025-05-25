@@ -1,0 +1,140 @@
+ Visualisation Functions(Rain forcast)
+Code:
+import requests
+import matplotlib.pyplot as plt
+from datetime import datetime
+import ipywidgets as widgets
+from IPython.display import display, clear_output
+import re
+
+def extract_location(q):
+    m = re.search(r'\b(?:in|at)\s+([A-Za-z\s]+)', q, re.I)
+    return m.group(1).strip().title() if m else "Perth"
+
+def get_weather(loc):
+    url = f"https://wttr.in/{loc}?format=j1"
+    data = requests.get(url).json()
+    res = []
+    for day in data['weather']:
+        for h in day['hourly']:
+            dt = datetime.strptime(day['date'] + ' ' + h['time'].zfill(4), "%Y-%m-%d %H%M")
+            res.append({'datetime': dt, 'temp': int(h['tempC']), 'humidity': int(h['humidity']), 'rain': int(h['chanceofrain'])})
+    return res
+
+def handle_query(q):
+    loc = extract_location(q)
+    weather = get_weather(loc)
+    key = 'temp'
+    label = 'Temperature (°C)'
+    if 'humidity' in q.lower():
+        key, label = 'humidity', 'Humidity (%)'
+    elif 'rain' in q.lower():
+        key, label = 'rain', 'Rain Chance (%)'
+    x = [d['datetime'] for d in weather[:12]]
+    y = [d[key] for d in weather[:12]]
+    plt.plot(x, y, marker='o')
+    plt.title(f"{label} in {loc}")
+    plt.xticks(rotation=45)
+    plt.grid(True)
+    plt.tight_layout()
+    plt.show()
+
+def chat():
+    box = widgets.Text(placeholder="Ask about the weather, e.g. 'Rain in London'")
+    btn = widgets.Button(description="Ask")
+    out = widgets.Output()
+    def on_click(_):
+        with out:
+            clear_output()
+            handle_query(box.value)
+    btn.on_click(on_click)
+    display(widgets.VBox([box, btn, out]))
+
+chat()
+
+
+
+
+----------------------------------
+Tool: ChatGPT
+Date: 23-05-2025
+----------------------------------
+
+Me: How do I get weather data in JSON format from wttr.in?
+AI: Use the URL `https://wttr.in/Perth?format=j1` — this gives JSON weather data for Perth.
+
+Me: How do I fetch that using Python?
+AI: Use the `requests` module like this:
+```python
+import requests
+url = "https://wttr.in/Perth?format=j1"
+response = requests.get(url)
+data = response.json().
+
+Me: Do I need error handling?
+AI: Yes, use try-except in case the request fails or the server is down.
+
+Me: I want to extract the chance of rain for each hour today. How?
+AI: You can loop through data['weather'][0]['hourly']. Each hour has a 'chanceofrain' field (as a string).
+
+Me: What if it's missing?
+AI: Use .get() with a default value:
+
+rain = int(hour_data.get('chanceofrain', 0))
+
+
+Me: How do I convert the time properly?
+AI: Use datetime.strptime like this:
+
+time_str = hour_data['time'].zfill(4)
+dt = datetime.strptime(data['weather'][0]['date'] + ' ' + time_str, '%Y-%m-%d %H%M').
+
+Me: I want to plot rain chance over time using a bar chart. What should I do?
+AI: Use matplotlib.pyplot.bar() with datetime values on the x-axis and rain chances on the y-axis.
+
+Me: Here's what I tried:
+
+plt.bar(times, rain_chances)
+AI: That’s correct! Also add styling:
+
+plt.bar(times, rain_chances, width=0.03, color='skyblue', label='Rain Chance (%)')
+
+
+Me: How do I limit the y-axis to 0–100?
+AI: Use plt.ylim(0, 110) to allow some space above 100%.
+
+
+Me: My time labels are overlapping. How do I fix it?
+AI: Rotate them using:
+
+plt.xticks(rotation=45)
+Me: How do I format the chart neatly?
+AI: Use:
+
+plt.tight_layout()
+plt.grid(True, linestyle='--', alpha=0.7)
+
+Me: Should I use a legend?
+AI: Yes, add plt.legend() to show what the bars mean.
+
+Me: I want the title to say "Live Rain Forecast for Today - Perth". How do I set that?
+AI: Use:
+
+plt.title('Live Rain Forecast for Today - Perth')
+
+Me: Can I save the chart instead of showing it?
+AI: Yes. Use:
+
+plt.savefig('rain_forecast_perth.png')
+Call this before plt.show().
+
+Me: Can I show grid lines for readability?
+AI: Yes, add:
+
+plt.grid(True, linestyle='--', alpha=0.7).
+
+
+
+
+
+
