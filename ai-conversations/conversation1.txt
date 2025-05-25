@@ -1,0 +1,47 @@
+Code:
+# 🧪 Optional packages — uncomment if needed in Colab or JupyterHub
+!pip install fetch-my-weather
+!pip install hands-on-ai
+!pip install pandas
+
+
+Tool: ChatGPT
+Date: 23-04-2025
+
+Me: How do I install the `fetch-my-weather` Python package?
+AI: You can install it using pip: `!pip install fetch-my-weather`
+
+Me: What if I'm in JupyterHub?
+AI: That command will still work in JupyterHub as long as you prefix it with `!`.
+
+Me: What if it fails due to permission error?
+AI: Then try using `--user`: `!pip install --user fetch-my-weather`
+
+Me: How can I use `fetch-my-weather` to get weather data for Delhi?
+AI: First, import it and use the function:
+```python
+from fetch_my_weather import get_weather
+weather = get_weather("Delhi")
+
+Me: What is hands-on-ai used for?
+AI: It's a Python package that provides tools for beginners to explore AI concepts like machine learning, data processing, and simple models.
+
+Me: How do I install it?
+AI: Just run !pip install hands-on-ai
+
+Me: Can I run basic AI models with it?
+AI: Yes, it includes pre-built templates to train basic classification and regression models.
+---
+
+
+Me: How do I use pandas to read a CSV file?
+AI: Use this command:
+import pandas as pd
+df = pd.read_csv("data.csv")
+
+
+
+
+
+
+
