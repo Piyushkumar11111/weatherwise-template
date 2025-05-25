@@ -1,0 +1,129 @@
+ Natural Language Processing
+Code:
+import requests
+import matplotlib.pyplot as plt
+from datetime import datetime
+import ipywidgets as widgets
+from IPython.display import display, clear_output
+import re
+
+def extract_location(q):
+    m = re.search(r'\b(?:in|at)\s+([A-Za-z\s]+)', q, re.I)
+    return m.group(1).strip().title() if m else "Perth"
+
+def get_weather(loc):
+    url = f"https://wttr.in/{loc}?format=j1"
+    data = requests.get(url).json()
+    res = []
+    for day in data['weather']:
+        for h in day['hourly']:
+            dt = datetime.strptime(day['date'] + ' ' + h['time'].zfill(4), "%Y-%m-%d %H%M")
+            res.append({'datetime': dt, 'temp': int(h['tempC']), 'humidity': int(h['humidity']), 'rain': int(h['chanceofrain'])})
+    return res
+
+def handle_query(q):
+    loc = extract_location(q)
+    weather = get_weather(loc)
+    key = 'temp'
+    label = 'Temperature (°C)'
+    if 'humidity' in q.lower():
+        key, label = 'humidity', 'Humidity (%)'
+    elif 'rain' in q.lower():
+        key, label = 'rain', 'Rain Chance (%)'
+    x = [d['datetime'] for d in weather[:12]]
+    y = [d[key] for d in weather[:12]]
+    plt.plot(x, y, marker='o')
+    plt.title(f"{label} in {loc}")
+    plt.xticks(rotation=45)
+    plt.grid(True)
+    plt.tight_layout()
+    plt.show()
+
+def chat():
+    box = widgets.Text(placeholder="Ask about the weather, e.g. 'Rain in London'")
+    btn = widgets.Button(description="Ask")
+    out = widgets.Output()
+    def on_click(_):
+        with out:
+            clear_output()
+            handle_query(box.value)
+    btn.on_click(on_click)
+    display(widgets.VBox([box, btn, out]))
+
+chat()
+
+
+
+Tool: ChatGPT
+Date: 23-05-2025
+
+
+Me: I want to build an interactive weather chatbot in Jupyter. Where should I start?
+AI: Use `ipywidgets` for interactivity and `requests` to get weather data from wttr.in. Start by creating a text input and a button with a callback function.
+
+Me: Can I use `widgets.Text` and `widgets.Button`?
+AI: Yes! Here's a quick setup:
+```python
+box = widgets.Text(placeholder="Ask about weather")
+btn = widgets.Button(description="Ask")
+display(box, btn).
+Use .on_click() to trigger a function when the button is pressed.
+
+Me: How do I extract the location from a user query like "rain in London"?
+AI: Use regular expressions. Here's an example:
+
+import re
+def extract_location(q):
+    match = re.search(r'\b(?:in|at)\s+([A-Za-z\s]+)', q, re.I)
+    return match.group(1).strip().title() if match else "Perth"
+
+Me: What if the query doesn’t mention a location?
+AI: Return a default like "Perth".
+
+
+Me: How do I get hourly weather data from wttr.in?
+AI: Use:
+
+url = f"https://wttr.in/{loc}?format=j1"
+data = requests.get(url).json()
+Loop over data['weather'] and day['hourly'] to get 3-hour interval data.
+
+Me: How do I convert the time?
+AI: Use:
+
+dt = datetime.strptime(day['date'] + ' ' + hour['time'].zfill(4), "%Y-%m-%d %H%M").
+
+
+Me: I want to plot different weather metrics based on the user query. How do I switch between temperature, humidity, and rain chance?
+AI: Inspect the query string:
+
+if 'humidity' in query.lower():
+    key = 'humidity'
+elif 'rain' in query.lower():
+    key = 'rain'
+else:
+    key = 'temp'
+Then plot based on the chosen key.
+
+Me: How do I label the plot dynamically?
+AI: Set label = 'Humidity (%)' or 'Rain Chance (%)' etc. depending on the key.
+
+Me: How do I display the plot each time the user asks a new question?
+AI: Use an Output widget and call clear_output() inside the button click handler:
+
+out = widgets.Output()
+with out:
+    clear_output()
+    handle_query(user_input)
+Me: What does tight_layout() do?
+AI: It automatically adjusts the spacing in your plot to avoid label overlap, especially with rotated x-axis labels.
+
+Me: Can I show only the first 12 hours?
+AI: Yes. Slice the data list: weather[:12].
+
+
+
+
+
+
+
