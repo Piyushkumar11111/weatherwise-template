@@ -1,0 +1,112 @@
+User Interface
+Code:
+import requests
+import ipywidgets as widgets
+from IPython.display import display, clear_output
+
+# Fetch live data from wttr.in
+def get_weather():
+    try:
+        res = requests.get("https://wttr.in/Perth?format=j1")
+        return res.json()
+    except:
+        return None
+
+# Show selected weather detail
+def show_weather(day, detail):
+    clear_output()
+    data = get_weather()
+    if not data:
+        print("❌ Cannot load weather data.")
+        return
+
+    day_data = data['weather'][{"Saturday": 0, "Sunday": 1, "Monday": 2}[day]]
+    hourly = day_data['hourly']
+    print(f"📅 {day} | Date: {day_data['date']}")
+
+    if detail == "Temperature":
+        print(f"🌡 Avg Temp: {day_data['avgtempC']}°C")
+    elif detail == "Rain":
+        print(f"🌧 Rain Chance: {min(int(h['chanceofrain']) for h in hourly)}% to {max(int(h['chanceofrain']) for h in hourly)}%")
+    elif detail == "Wind":
+        print(f"💨 Wind: {min(int(h['windspeedKmph']) for h in hourly)} to {max(int(h['windspeedKmph']) for h in hourly)} km/h")
+    elif detail == "Clouds":
+        print(f"☁️ Clouds: {min(int(h['cloudcover']) for h in hourly)}% to {max(int(h['cloudcover']) for h in hourly)}%")
+    else:
+        print(f"🌦 {day_data['hourly'][0]['weatherDesc'][0]['value']}")
+
+# UI
+day_picker = widgets.Dropdown(options=["Saturday", "Sunday", "Monday"], description="📆 Day:")
+detail_picker = widgets.Dropdown(options=["Temperature", "Rain", "Wind", "Clouds", "Summary"], description="🌦 Detail:")
+button = widgets.Button(description="Show Weather", button_style="info")
+
+def on_click(b): show_weather(day_picker.value, detail_picker.value)
+button.on_click(on_click)
+
+display(widgets.HTML("<h3>🧭 Perth Weather (Live from wttr.in)</h3>"))
+display(day_picker, detail_picker, button)
+
+
+
+
+Tool: ChatGPT
+Date: 23-05-2025
+
+
+Me: I want to build a simple UI in Jupyter to show weather data. What should I use?
+AI: You can use `ipywidgets` to create interactive elements like dropdowns and buttons. Use the `requests` library to fetch JSON weather data from wttr.in.
+
+Me: Can I show weather for different days?
+AI: Yes, create a dropdown with options like "Saturday", "Sunday", "Monday", then use the selected value to access the correct index in `data['weather']`.
+
+Me: How can I map day names like "Saturday" to the JSON array index?
+AI: Use a dictionary to map days to their position:
+```python
+{"Saturday": 0, "Sunday": 1, "Monday": 2}
+Then use it like:
+
+day_data = data['weather'][day_index[day]]
+
+
+Me: What if the selected day isn't found?
+AI: Wrap the lookup in a try-except or use .get() with a fallback value.
+
+Me: I want to show rain chance range (min to max). How can I calculate that?
+AI: Iterate over all 8 hourly entries and extract chanceofrain:
+
+min_rain = min(int(h['chanceofrain']) for h in hourly)
+max_rain = max(int(h['chanceofrain']) for h in hourly)
+
+Me: Should I convert values to int?
+AI: Yes, since chanceofrain is a string in the JSON, convert it to int for min/max comparison.
+
+Me: I want to add more weather options like wind and cloud cover.
+AI: Add them to your dropdown list:
+
+detail_picker = widgets.Dropdown(options=["Temperature", "Rain", "Wind", "Clouds", "Summary"])
+Then handle each one using conditional statements:
+
+elif detail == "Wind":
+    ...
+elif detail == "Clouds":
+    ...
+Use min/max just like with rain.
+
+Me: How do I clear previous output in Jupyter when the button is clicked?
+AI: Use clear_output() at the start of your click function:
+
+def on_click(b):
+    clear_output()
+    ...
+Me: How do I wire the button to the function?
+AI: Use:
+
+button.on_click(on_click)
+Then display everything:
+
+display(day_picker, detail_picker, button)
+Me: Is it okay to use print() in Jupyter?
+AI: Yes, print() works fine inside output cells in Jupyter Notebooks.
+
+
+
