@@ -1,0 +1,105 @@
+Setup and confergation
+Code:
+import requests
+import matplotlib.pyplot as plt
+import pandas as pd  # 'pandas' should be imported as 'pd' (common convention)
+
+
+
+Tool: ChatGPT
+Date: 23-05-2025
+
+Me: Why do people import pandas as `pd`?
+AI: It's a standard convention in the Python data science community. It shortens your code, like writing `pd.read_csv()` instead of `pandas.read_csv()`.
+
+Me: Will the code break if I just do `import pandas`?
+AI: No, it will still work. But you'll need to use `pandas.read_csv()` and `pandas.DataFrame()` which is longer and less common in shared code.
+
+
+Me: How do I use `requests` to fetch a CSV file from a URL?
+AI: Use the `requests.get()` method to get the text, then write it to a file or read it into pandas directly.
+
+Example:
+```python
+import requests
+
+url = "https://example.com/data.csv"
+response = requests.get(url)
+
+with open("data.csv", "w") as file:
+    file.write(response.text)
+
+Me: How do I read it into a DataFrame?
+AI: After saving the file, use pd.read_csv("data.csv")
+
+Me: How do I make a simple plot with matplotlib?
+AI: Use plt.plot() to create a line graph.
+
+Example:
+
+import matplotlib.pyplot as plt
+
+months = ["Jan", "Feb", "Mar"]
+values = [100, 150, 200]
+
+plt.plot(months, values)
+plt.title("Monthly Data")
+plt.xlabel("Month")
+plt.ylabel("Value")
+plt.show()
+
+Me: Do I need to call plt.show()?
+AI: Yes, it displays the plot window. Without it, nothing will appear (especially in plain Python scripts).
+
+
+Me: I have a CSV file. How do I plot one of the columns?
+AI: Load it into pandas, then pass the column data to plt.plot().
+
+Example:
+
+import pandas as pd
+import matplotlib.pyplot as plt
+
+df = pd.read_csv("data.csv")
+plt.plot(df["Date"], df["Sales"])
+plt.xticks(rotation=45)
+plt.title("Sales Over Time")
+plt.show()
+
+
+Me: What if the x-axis labels are overlapping?
+AI: Use plt.tight_layout() or rotate the ticks like this: plt.xticks(rotation=45)
+
+Me: How do I combine requests, pandas, and matplotlib to make a full pipeline?
+AI: Here's an example that fetches a CSV, loads it into pandas, and plots a column.
+
+import requests
+import pandas as pd
+import matplotlib.pyplot as plt
+
+url = "https://people.sc.fsu.edu/~jburkardt/data/csv/airtravel.csv"
+response = requests.get(url)
+
+with open("airtravel.csv", "w") as f:
+    f.write(response.text)
+
+df = pd.read_csv("airtravel.csv")
+plt.plot(df["Month"], df["JAN"], marker="o")
+plt.title("Air Travel in January")
+plt.xlabel("Month")
+plt.ylabel("Passengers")
+plt.tight_layout()
+plt.show()
+
+Me: What happens if the CSV has bad formatting?
+AI: You can use error_bad_lines=False or add try/except blocks to catch parsing errors.
+
+
+
+
+
+
+
+
+
+
