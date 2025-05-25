@@ -41,7 +41,7 @@ plt.show()
 
 
 Tool: ChatGPT
-Date: 25-05-2025
+Date: 23-05-2025
 
 
 Me: How do I get live weather data for Perth from wttr.in?
