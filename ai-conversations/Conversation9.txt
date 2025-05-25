@@ -1,0 +1,90 @@
+Main Appliccation Logic
+Code:
+import requests
+
+# Fetch live weather data from wttr.in
+def get_weather():
+    data = requests.get("https://wttr.in/Perth?format=j1").json()
+    day = input("Choose day (today/tomorrow/monday): ").lower()
+    attr = input("Choose detail (temperature/rain/wind/clouds/general): ").lower()
+
+    index = {"today": 0, "tomorrow": 1, "monday": 2}.get(day, 0)
+    day_data = data["weather"][index]
+    hourly = day_data["hourly"]
+
+    if attr == "temperature":
+        print(f"🌡 Avg Temp: {day_data['avgtempC']}°C")
+    elif attr == "rain":
+        print(f"🌧 Rain Chance: {hourly[0]['chanceofrain']}%")
+    elif attr == "wind":
+        print(f"💨 Wind: {hourly[0]['windspeedKmph']} km/h")
+    elif attr == "clouds":
+        print(f"☁️ Cloud Cover: {hourly[0]['cloudcover']}%")
+    else:
+        desc = hourly[0]["weatherDesc"][0]["value"]
+        print(f"📋 {desc}, Temp: {day_data['avgtempC']}°C, Rain: {hourly[0]['chanceofrain']}%")
+
+get_weather()
+
+
+
+Tool: ChatGPT
+Date: 23-05-2025
+
+
+Me: I want to create a simple Python script that fetches weather from wttr.in and asks the user to choose the day and detail. What’s the basic plan?
+AI: Use `requests` to get the JSON data, then use `input()` to ask the user for a day and weather detail. Map day names to JSON indexes, and then use if-elif blocks to display the correct info.
+
+Me: How do I convert “today”, “tomorrow”, and “monday” into JSON indexes?
+AI: Use a dictionary:
+```python
+index = {"today": 0, "tomorrow": 1, "monday": 2}
+Then use .get(day, 0) to default to today if the input is invalid.
+
+Me: How can I show the general weather summary like description + temp + rain?
+AI: Get the first hourly object like:
+
+desc = hourly[0]["weatherDesc"][0]["value"]
+Then combine it with avg temp and rain chance:
+
+print(f"{desc}, Temp: {day_data['avgtempC']}°C, Rain: {hourly[0]['chanceofrain']}%").
+
+Me: Is it okay to use input() in this kind of weather script?
+AI: Yes, for terminal-based apps, input() is fine. Just remember to .lower() the input to match keys, and use .get() on the dictionary to avoid crashes.
+
+Me: What if the JSON call fails? Can I handle that?
+AI: Yes, wrap the request in a try-except block:
+
+try:
+    data = requests.get(...).json()
+except:
+    print("Error fetching data.")
+This helps avoid crashes when the API is unavailable or your internet is down.
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
