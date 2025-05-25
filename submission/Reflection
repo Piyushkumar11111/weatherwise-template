@@ -1,0 +1,34 @@
+ Project Reflection
+
+AI Tools Used
+For my project, I used a smart helper called ChatGPT. 
+It is like a robot that talks and helps you write code and understand hard things. 
+I also used something called GitHub Copilot, which helps you finish your code like magic.
+These tools helped me a lot when I was stuck or didn’t know how to write something.
+For example, I wanted to make a weather app that shows temperature, rain, wind, and clouds. 
+ChatGPT helped me write the Python code and explain what each line does. Copilot helped me finish some lines faster.
+Using AI tools made my work easier and faster. It felt like having a smart friend who is always there to help.
+
+Prompting Techniques
+When I talked to ChatGPT, I tried to be very clear.
+I used simple questions like, “How do I get rain data from this?” or “Can you help me show clouds in my app?” 
+I learned that asking clear and small questions gives better answers.
+I also used examples when I asked, like “I want it to look like this: 40% rain.” That helped the AI understand me better.
+I also said what I wanted in each step. Like, “First show the temperature, then the rain,” and that worked well. So now I know that step-by-step questions are very useful!
+
+What Worked Well?
+One thing I am really proud of is my weather project!
+I made a program where you can type a city and it tells you the weather like temperature, rain chance, and even a weather description like “partly cloudy.” 
+I used real weather data from the internet using something called wttr.in. It felt very cool to see real weather from places like Perth, London, or Tokyo in my app.
+I also made the program look nice by adding emojis. That made it fun and easy to read.
+
+ What Would You Do Differently?
+If I had more time, I would make a real app with buttons instead of typing.
+Right now, the program runs in code, and you have to type the day and the weather type. 
+If I knew how to build websites or phone apps, I would make it like a game where you click to see the weather. 
+I also want to learn how to make it talk, like “Today it will rain!” That would be fun.
+
+ Final Thoughts
+I had a lot of fun doing this project. I learned how to use AI helpers and how to read data from the internet.
+Before this, I didn’t know how weather websites worked. Now I do! I also feel happy that I made something by myself, with a little help from AI.
+Using tools like ChatGPT and Copilot made me feel smarter and more confident. I want to do more projects like this in the future!
