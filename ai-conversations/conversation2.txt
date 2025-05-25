@@ -8,7 +8,7 @@ os.environ['HANDS_ON_AI_API_KEY'] = input('Enter your API key: ')
 
 
 Tool: ChatGPT
-Date: 23-04-2025
+Date: 23-05-2025
 
 
 Me: How do I set up the environment variables for `hands-on-ai`?
