@@ -1,0 +1,153 @@
+Testing and Examples
+Code:
+import requests
+
+def get_weather_for_test(day, attr, location="Perth"):
+    url = f"https://wttr.in/{location}?format=j1"
+    data = requests.get(url).json()
+    index = {"today": 0, "tomorrow": 1, "monday": 2}.get(day.lower(), 0)
+    day_data = data["weather"][index]
+    hourly = day_data["hourly"]
+
+    if attr == "temperature":
+        return f"🌡 Avg Temp in {location}: {day_data['avgtempC']}°C"
+    elif attr == "rain":
+        return f"🌧 Rain Chance in {location}: {hourly[0]['chanceofrain']}%"
+    elif attr == "wind":
+        return f"💨 Wind in {location}: {hourly[0]['windspeedKmph']} km/h"
+    elif attr == "clouds":
+        return f"☁️ Cloud Cover in {location}: {hourly[0]['cloudcover']}%"
+    else:
+        desc = hourly[0]["weatherDesc"][0]["value"]
+        return f"📋 {desc} in {location}, Temp: {day_data['avgtempC']}°C, Rain: {hourly[0]['chanceofrain']}%"
+
+# === Example Tests ===
+def run_examples():
+    print("🧪 Example Outputs:\n")
+
+    print("1️⃣ Today | Temperature | Perth")
+    print(get_weather_for_test("today", "temperature", "Perth"), "\n")
+
+    print("2️⃣ Tomorrow | Rain | London")
+    print(get_weather_for_test("tomorrow", "rain", "London"), "\n")
+
+    print("3️⃣ Monday | Wind | New York")
+    print(get_weather_for_test("monday", "wind", "New York"), "\n")
+
+    print("4️⃣ Today | General | Tokyo")
+    print(get_weather_for_test("today", "general", "Tokyo"), "\n")
+
+if __name__ == "__main__":
+    run_examples()
+
+
+
+Tool: ChatGPT
+Date: 23-05-2025
+
+
+Me: I want to create a function that takes a day, attribute, and location, and returns a weather string using wttr.in.
+AI: That’s a good idea. Use the `requests` library to fetch `https://wttr.in/{location}?format=j1`, then pick the right index for the day and pull the hourly data.
+
+Me: How do I map “today”, “tomorrow”, and “monday” to JSON day indexes?
+AI: Use a dictionary like:
+```python
+index = {"today": 0, "tomorrow": 1, "monday": 2}.
+Then use .get(day.lower(), 0) to avoid errors if the user types something unexpected.
+
+Me: I want the function to support these weather attributes: temperature, rain, wind, clouds, and a general summary.
+AI: Perfect. Use if-elif blocks for each one. For example:
+
+temperature: day_data['avgtempC']
+rain: hourly[0]['chanceofrain']
+wind: hourly[0]['windspeedKmph']
+clouds: hourly[0]['cloudcover']
+general: combine weatherDesc, temperature, and rain into one string.
+
+
+Me: What’s the best way to test this function with different inputs?
+AI: Write a run_examples() function that calls get_weather_for_test() with different combinations of day, attribute, and location, then print the outputs. This way, you can see if your function is working correctly in all cases.
+
+Me: What if the API is down or the request fails? Should I add error handling?
+AI: Yes, wrap the API call with a try/except block. For example:
+
+try:
+    data = requests.get(url).json()
+except:
+    return "❌ Error fetching data"
+This will prevent the script from crashing and show a helpful message.
+
+
+Me: I want to make the output friendly with emojis like 🌡 or 🌧. Is that okay?
+AI: Yes, adding emojis is a great idea for readability! Just use standard Unicode emojis in the returned strings, e.g.:
+
+return f"🌡 Avg Temp in {location}: {day_data['avgtempC']}°C"
+It works in most terminals and notebooks.
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
